@@ -39,6 +39,11 @@ const url = require("url");
 
 //////////////////////////////////////
 // SERVER
+
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
+const dataObj = JSON.parse(data); //перетворюємо JSON-рядок на об'єкт JavaScript
+
+
 // створюємо сервер за допомогою http модуля
 const server = http.createServer((req, res) => {
   console.log(req.url); //Виводимо запит в консоль два рази, оскільки браузер робить два запити: один на localhost:8000, другий на favicon.ico
@@ -47,15 +52,30 @@ const server = http.createServer((req, res) => {
     res.end("This is the OVERVIEW");
   } else if (pathName === "/product") {
     res.end("This is the PRODUCT");
+  } else if (pathName === "/api") {
+    //${__dirname} - це змінна, яка містить шлях до поточної папки
+     //читаємо файл data.json
+   //  fs.readFile(`${__dirname}/dev-data/data.json`, "utf-8", (err, data) => {
+   //    if (err) {
+   //       res.writeHead(500, { 'Content-type': 'text/html' });
+   //       res.end("<h1>Internal Server Error!</h1>");
+   //       return;
+   //     }
+   //    const productData = JSON.parse(data); //перетворюємо JSON-рядок на об'єкт JavaScript
+   //    res.writeHead(200, { 'Content-type': 'application/json' });
+   //    res.end(data); //Відправляємо відповідь на запит у вигляді JSON-рядка
+   //  });
+
+   res.writeHead(200, { 'Content-type': 'application/json' });
+   res.end(data); //Відправляємо відповідь на запит у вигляді JSON-рядка
   } else {
-   //має бути відправлений перед відправкою відповіді
-   res.writeHead(404, {
-      'Content-type': 'text/html',
-      'my-own-header': 'hello-world'
-   }); //Відправляємо заголовок відповіді з кодом 404
-   res.end("<h1>Page not found!</h1>"); //Відправляємо відповідь на запит
+    //має бути відправлений перед відправкою відповіді
+    res.writeHead(404, {
+      "Content-type": "text/html",
+      "my-own-header": "hello-world",
+    }); //Відправляємо заголовок відповіді з кодом 404
+    res.end("<h1>Page not found!</h1>"); //Відправляємо відповідь на запит
   }
-  res.end("Hello from the server!"); //Відправляємо відповідь на запит
 });
 
 //Запускаємо сервер на порту 8000 і слухаємо запити на localhost
